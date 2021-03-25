@@ -1,5 +1,6 @@
 "#BLOCKCHAIN SOCIAL MEDIA APP"
 
-REACT, WEB3.JS, GANACHE, SOLIDITY
+REACT, WEB3, GANACHE, SOLIDITY, tbd
 
-MADE WITH DAPP U starter kit framework.
+MADE WITH DAPP U starter kit framework. 
+
