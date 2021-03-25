@@ -9,7 +9,7 @@ contract SocialNetwork {
         uint256 id;
         string content;
         uint256 tipAmount;
-        address author;
+        address payable author;
     }
 
     event PostCreated(
@@ -17,6 +17,13 @@ contract SocialNetwork {
         string content,
         uint256 tipAmount,
         address author
+    );
+
+    event PostTipped(
+        uint256 id,
+        string content,
+        uint256 tipAmount,
+        address payable author
     );
 
     constructor() public {
@@ -32,6 +39,23 @@ contract SocialNetwork {
         posts[postCount] = Post(postCount, _content, 0, msg.sender);
         //Trigger event
         emit PostCreated(postCount, "This is my first post", 0, msg.sender);
+    }
+
+    function tipPost(uint256 _id) public payable {
+        //Make sure the id is valid
+        require(_id > 0 && _id <= postCount);
+        //fetch post
+        Post memory _post = posts[_id];
+        //fetch the author
+        address payable _author = _post.author;
+        //pay the author
+        address(_author).transfer(msg.value);
+        //increment tip amount
+        _post.tipAmount = _post.tipAmount + msg.value;
+        //update post
+        posts[_id] = _post;
+        //trigger the event
+        emit PostTipped(postCount, _post.content, _post.tipAmount, _author);
     }
 }
 //must create posts
