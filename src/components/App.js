@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import logo from '../logo.png';
 import './App.css';
-import Navbar from './Navbar'
+import SocialNetwork from '../abis/SocialNetwork.json';
+import Navbar from './Navbar';
 
 
 
@@ -36,6 +36,18 @@ async loadBlockChainData() {
   const accounts = await web3.eth.getAccounts()
   console.log(accounts)
   this.setState({account: accounts[0]})
+  //network id 5777 for ganache testing
+  const networkId = await web3.eth.net.getId()
+  console.log(networkId)
+  if(SocialNetwork.networks[networkId]) {
+    
+  } else {
+    window.alert('SocialNetwork contract not deployed to detected network.')
+  }
+  //address "0xE5b033dFd9cC755D21B22743BF196eBaC4Cb922f"
+
+  //abi SocialNetwork.json
+  //
 }
 
 constructor(props) {
