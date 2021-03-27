@@ -39,8 +39,21 @@ async loadBlockChainData() {
   //network id 5777 for ganache testing
   const networkId = await web3.eth.net.getId()
   console.log(networkId)
-  if(SocialNetwork.networks[networkId]) {
-    
+  const networkData = SocialNetwork.networks[networkId]
+  if(networkData) {
+    const socialNetwork = web3.eth.Contract(SocialNetwork.abi, networkData.address)
+    // console.log(socialNetwork)
+    this.setState({socialNetwork}) //key value pair socialNetwork
+    const postCount = await socialNetwork.methods.postCount().call()
+    this.setState({postCount})
+    // console.log(postCount)
+    for (var i = 1; i <= postCount; i++) {
+      const post = await socialNetwork.methods.posts(i).call()
+      this.setState({
+        posts: [...this.state.posts, post]
+      })
+    }
+    // console.log({posts: this.state.posts})
   } else {
     window.alert('SocialNetwork contract not deployed to detected network.')
   }
@@ -53,7 +66,11 @@ async loadBlockChainData() {
 constructor(props) {
   super(props)
   this.state = {
-    account: ''
+    account: '',
+    socialNetwork: null
+  ,
+  postcount: 0, 
+  posts:[]
   }
 }
 
@@ -65,8 +82,26 @@ constructor(props) {
         <Navbar account={this.state.account}/>
         <div className="container-fluid mt-5">
           <div className="row">
-            <main role="main" className="col-lg-12 d-flex text-center">
+            <main role="main" className="col-lg-12 ml-auto mr-auto" style={{maxWidth: '500px'}}>
               <div className="content mr-auto ml-auto">
+              {this.state.posts.map((post, key) => {
+                return(
+                  <div className=" card mb-4" key={key}>
+                    <div className="card-header">
+                    <small classname="text-muted">{post.author}</small>
+                    </div>
+                    <ul id="postlist" className="list-group list-group-flush">
+                      <li className="list-group-item">
+                        <p> {post.content}</p>
+                      </li>
+                      <li className="list-group-item py-2" key={key}>
+                        <small> Tips: {window.web3.utils.fromWei(post.tipAmount.toString(), 'Ether')}</small>
+                        <button className="btn btn-link btn-sm float-right pt-0"><span>TIP 0.1 ETH</span></button>
+                      </li>
+                    </ul>
+                  </div>
+                )
+              })}
               </div>
             </main>
           </div>
