@@ -3,6 +3,8 @@ import Web3 from 'web3';
 import './App.css';
 import SocialNetwork from '../abis/SocialNetwork.json';
 import Navbar from './Navbar';
+import Main from './Main';
+
 
 
 
@@ -53,6 +55,7 @@ async loadBlockChainData() {
         posts: [...this.state.posts, post]
       })
     }
+    this.setState({loading: false})
     // console.log({posts: this.state.posts})
   } else {
     window.alert('SocialNetwork contract not deployed to detected network.')
@@ -63,15 +66,33 @@ async loadBlockChainData() {
   //
 }
 
+createPost(content) {
+  this.setState({ loading:true})
+  this.state.socialNetwork.methods.createPost(content).send({from:this.state.account})
+  .once('receipt', (receipt) => {
+    this.setState({loading:false})
+  })
+}
+
+tipPost(id, tipAmount) {
+  this.setState({ loading:true})
+  this.state.socialNetwork.methods.tipPost(id).send({ from:this.state.account, tipAmount})
+  .once('receipt', (receipt) => {
+    this.setState({loading : false})
+  })
+}
+
 constructor(props) {
   super(props)
   this.state = {
     account: '',
-    socialNetwork: null
-  ,
-  postcount: 0, 
-  posts:[]
+    socialNetwork: null,
+    postcount: 0, 
+    posts:[], 
+    loading: true
   }
+  this.createPost = this.createPost.bind(this)
+  this.tipPost = this.tipPost.bind(this)
 }
 
 
@@ -80,32 +101,13 @@ constructor(props) {
     return (
       <div>
         <Navbar account={this.state.account}/>
-        <div className="container-fluid mt-5">
-          <div className="row">
-            <main role="main" className="col-lg-12 ml-auto mr-auto" style={{maxWidth: '500px'}}>
-              <div className="content mr-auto ml-auto">
-              {this.state.posts.map((post, key) => {
-                return(
-                  <div className=" card mb-4" key={key}>
-                    <div className="card-header">
-                    <small classname="text-muted">{post.author}</small>
-                    </div>
-                    <ul id="postlist" className="list-group list-group-flush">
-                      <li className="list-group-item">
-                        <p> {post.content}</p>
-                      </li>
-                      <li className="list-group-item py-2" key={key}>
-                        <small> Tips: {window.web3.utils.fromWei(post.tipAmount.toString(), 'Ether')}</small>
-                        <button className="btn btn-link btn-sm float-right pt-0"><span>TIP 0.1 ETH</span></button>
-                      </li>
-                    </ul>
-                  </div>
-                )
-              })}
-              </div>
-            </main>
-          </div>
-        </div>
+        {this.state.loading
+        ? <div id="loader" className="text-center mt-5"><p>Loading...</p></div>
+        : <Main
+             posts={this.state.posts}
+             createPost={this.createPost}
+             tipPost={this.tipPost} />
+        }
       </div>
     );
   }
