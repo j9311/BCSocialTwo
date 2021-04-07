@@ -67,7 +67,7 @@ async loadBlockChainData() {
 }
 
 createPost(content) {
-  this.setState({ loading:true})
+  this.setState({ loading:true })
   this.state.socialNetwork.methods.createPost(content).send({from:this.state.account})
   .once('receipt', (receipt) => {
     this.setState({loading:false})
@@ -77,8 +77,10 @@ createPost(content) {
 tipPost(id, tipAmount) {
   this.setState({ loading:true})
   this.state.socialNetwork.methods.tipPost(id).send({ from:this.state.account, tipAmount})
-  .once('receipt', (receipt) => {
-    this.setState({loading : false})
+  .on('confirmation', function(confirmationNumber, receipt) {
+    //console.log(confirmationNumber)
+    //console.log(receipt)
+    window.location.reload()
   })
 }
 
