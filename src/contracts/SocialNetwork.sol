@@ -26,6 +26,8 @@ contract SocialNetwork {
         address payable author
     );
 
+    event AuthorGift(uint256 id, uint256 giftAmount, address payable author);
+
     constructor() public {
         name = "My Social Network";
     }
@@ -56,6 +58,10 @@ contract SocialNetwork {
         posts[_id] = _post;
         //trigger the event
         emit PostTipped(postCount, _post.content, _post.tipAmount, _author);
+    }
+
+    function authorTip(uint256 _id) public payable {
+        require(_id > 0);
     }
 }
 //must create posts
