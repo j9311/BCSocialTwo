@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+#necessary to include .DS_store? Investigate 05/21.
+
 # dependencies
 /node_modules
 /.pnp
