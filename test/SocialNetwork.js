@@ -52,6 +52,10 @@ require ('chai')
                 assert.equal(post.tipAmount, '0', 'VALID TIP')
                 assert.equal(post.author, author, 'VALID AUTHOR')
             })
+            
+            //test for confirm receipt prompt on send and receive. 
+            
+            
             it('allows users to tip posts' , async () => {
 //author balance before purchase
                 let lastAuthBal
