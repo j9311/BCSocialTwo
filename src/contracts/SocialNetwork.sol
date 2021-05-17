@@ -4,7 +4,7 @@ contract SocialNetwork {
     string public name;
     uint256 public postCount = 0;
     mapping(uint256 => Post) public posts;
-
+//data typing::
     struct Post {
         uint256 id;
         string content;
@@ -25,7 +25,7 @@ contract SocialNetwork {
         uint256 tipAmount,
         address payable author
     );
-
+//include gift confirm receipt
     event AuthorGift(uint256 id, uint256 giftAmount, address payable author);
 
     constructor() public {
@@ -59,7 +59,7 @@ contract SocialNetwork {
         //trigger the event
         emit PostTipped(postCount, _post.content, _post.tipAmount, _author);
     }
-
+//require confirm receipt on send and receive
     function authorTip(uint256 _id) public payable {
         require(_id > 0);
     }
